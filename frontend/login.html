@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusCare</title>
+    <style>
+        /* 1. Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        body {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* Deep Navy Background */
+            background-color: #020f2c; 
+        }
+
+        /* 2. Login Card */
+        .login-card {
+            background-color: #1e293b; /* Slightly lighter navy */
+            height:650px;
+            width: 700px;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            border: 1px solid #334155;   
+        }
+
+        h2 {
+            color: #f8fafc;
+            font-size: 50px;
+            margin-bottom: 8px;
+        }
+
+        p.subtitle {
+            color: #94a3b8;
+            font-size: 18px;
+            margin-bottom: 30px;
+        }
+
+        /* 3. Form Styling */
+        .form-group {
+            text-align: left;
+            margin-bottom: 40px;
+        }
+
+        label {
+            display: block;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        /* Input Fields */
+        input[type="text"], 
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #f8fafc;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            border-color: #38bdf8; /* Bright blue focus */
+        }
+
+        /* Radio Buttons */
+        .radio-container {
+            display: flex;
+            gap: 40px;
+            margin-top: 5px;
+        }
+
+        .radio-item {
+            display: flex;
+            align-items: center;
+            color: #cbd5e1;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .radio-item input {
+            margin-right: 8px;
+            accent-color: #38bdf8;
+        }
+
+        /* 4. Action Button */
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: #38bdf8;
+            color: #0f172a;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
+
+        .btn-login:hover {
+            background-color: #7dd3fc;
+        }
+
+        /* 5. Footer Link */
+        .footer {
+            margin-top: 25px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .footer a {
+            color: #38bdf8;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h2>Campus Care</h2>
+        <p class="subtitle">Login to your account</p>
+
+        <form>
+            <div class="form-group">
+                <label>Login As</label>
+                <div class="radio-container">
+                    <label class="radio-item">
+                        <input type="radio" name="user_type" id="student" checked> Student
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="user_type" id="manager"> Management
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="roll">Roll Number</label>
+                <input type="text" id="roll" placeholder="Enter roll number" required>
+            </div>
+
+            <div class="form-group">
+                <label for="pwd">Password</label>
+                <input type="password" id="pwd" placeholder="Enter password" required>
+            </div>
+
+            <button type="submit" class="btn-login">Login</button>
+        </form>
+
+        <div class="footer" id="footer">
+            Don't have an account? <a href="#">Register here</a>
+        </div>
+    </div>
+
+</body>
+</html>
+
+<script>
+
+    let student = document.getElementById("student");
+    let manager = document.getElementById("manager");
+    let footer= document.getElementById("footer");
+
+    student.addEventListener("change", function() {
+        if (student.checked) {
+            footer.style.display = "block";
+        }
+    });
+
+    manager.addEventListener("change", function () {
+    if (manager.checked) {
+      footer.style.display = "none";
+    }
+  });
+  
+</script>
