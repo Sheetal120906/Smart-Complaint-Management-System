@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Registration</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #020f2c;
+    padding: 40px 0;
+}
+
+.reg-card {
+    background-color: #1e293b;
+    width: 90%;
+    max-width: 600px;
+    padding: 40px;
+    border-radius: 16px;
+    border: 1px solid #2d3748;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+h2 {
+    color: #fff;
+    font-size: 28px;
+}
+
+.subtitle {
+    color: #94a3b8;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* FORM */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+}
+
+.form-row .form-group {
+    flex: 1;
+}
+
+label {
+    display: block;
+    color: #e2e8f0;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+/* INPUTS */
+input, select {
+    width: 100%;
+    padding: 11px 14px;
+    background-color: #0f172a;
+    border: 1.5px solid #334155;
+    border-radius: 8px;
+    color: #f8fafc;
+    outline: none;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+input:focus, select:focus {
+    border-color: #22d3ee;
+    box-shadow: 0 0 0 3px rgba(34,211,238,0.2);
+}
+
+/* BUTTON */
+.btn-register {
+    width: 100%;
+    padding: 12px;
+    background-color: #22d3ee;
+    color: #083344;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+
+.btn-register:hover {
+    background-color: #67e8f9;
+}
+
+/* FOOTER */
+.footer {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 13px;
+    color: #94a3b8;
+}
+
+.footer a {
+    color: #22d3ee;
+    text-decoration: none;
+    font-weight: 600;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="reg-card">
+    <div class="header">
+        <h2>Student Registration</h2>
+        <p class="subtitle">Create your account</p>
+    </div>
+
+    <form action="/register" method="POST">
+
+        <div class="form-group">
+            <label>Roll Number *</label>
+            <input type="text" name="roll" placeholder="Enter Roll Number" required>
+        </div>
+
+        <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" name="name" placeholder="Enter full name" required>
+        </div>
+
+        <div class="form-group">
+            <label>Department *</label>
+            <select name="department" required>
+                <option value="">Select Department</option>
+                <option value="CSE">Computer Science</option>
+                <option value="ECE">Electronics</option>
+                <option value="ME">Mechanical</option>
+            </select>
+        </div>
+
+        <!-- ROW -->
+        <div class="form-row">
+            <div class="form-group">
+                <label>Year *</label>
+                <select name="year" required>
+                    <option value="">Select</option>
+                    <option value="1">1st</option>
+                    <option value="2">2nd</option>
+                    <option value="3">3rd</option>
+                    <option value="4">4th</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Password *</label>
+                <input type="password" name="password" placeholder="Create password" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>Confirm Password *</label>
+            <input type="password" name="confirmPassword" placeholder="Confirm password" required>
+        </div>
+
+        <input type="hidden" name="role" value="student">
+
+        <button type="submit" class="btn-register">Register</button>
+    </form>
+
+    <div class="footer">
+        Already have an account? <a href="/login">Login here</a>
+    </div>
+</div>
+
+</body>
+</html>

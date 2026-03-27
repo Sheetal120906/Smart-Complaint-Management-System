@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: #020f2c;
+            color: white;
+            min-height: 100vh;
+            padding-bottom: 30px;
+        }
+
+
+        .welcome-section {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .container { max-width: 1200px; margin: auto; }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: #172133;
+            padding: 30px;
+            border-radius: 12px;
+            border-bottom: 4px solid #3b82f6;
+        }
+
+        .pending { border-bottom-color: #f59e0b; }
+        .progress { border-bottom-color: #10b981; }
+        .resolved { border-bottom-color: #6366f1; }
+
+        .section-box {
+            background: #172133;
+            padding: 30px;
+            margin-top: 30px;
+            border-radius: 12px;
+        }
+
+        .action-btn {
+            background: #0f172a;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+        }
+
+        .btn-post {
+            background: #3b82f6;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+        }
+    </style>
+</head>
+  
+<body>
+
+<%- include("../partials/header") %>
+
+<div class="welcome-section">
+    <h1>Welcome, <%= user.name %>!</h1>
+    <p>
+    <%= user.roll %> | <%= user.department %> | Year <%= user.year %>
+    </p>
+</div>
+
+<div class="container">
+
+    <!-- STATS -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3><%= stats.total %></h3>
+            <p>Total Complaints</p>
+        </div>
+
+        <div class="stat-card pending">
+            <h3><%= stats.pending %></h3>
+            <p>Pending</p>
+        </div>
+
+        <div class="stat-card progress">
+            <h3><%= stats.inProgress %></h3>
+            <p>In Progress</p>
+        </div>
+
+        <div class="stat-card resolved">
+            <h3><%= stats.resolved %></h3>
+            <p>Resolved</p>
+        </div>
+    </div>
+
+    <!--ACTIONS -->
+    <div class="section-box">
+        <h2>Quick Actions</h2>
+
+        <div>
+            <div class="action-btn" onclick="location.href='/add-complaint'">Post Complaint</div>
+            <div class="action-btn" onclick="location.href='/complaints'">All Complaints</div>
+            <div class="action-btn" onclick="location.href='/my-complaints'">My Complaints</div>
+            <div class="action-btn" onclick="location.href='/feedback'">Feedback</div>
+        </div>
+    </div>
+
+    <!--  EMPTY STATE -->
+    <% if(stats.total === 0) { %>
+    <div class="section-box empty-state">
+        <h2>Empty</h2>
+        <p>No Complaints Yet</p>
+        <button class="btn-post" onclick="location.href='/add-complaint'">
+            Post Complaint
+        </button>
+    </div>
+    <% } %>
+
+</div>
+
+</body>
+</html>
