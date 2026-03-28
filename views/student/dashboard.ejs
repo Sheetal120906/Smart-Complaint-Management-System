@@ -119,16 +119,33 @@
         </div>
     </div>
 
-    <!--  EMPTY STATE -->
-    <% if(stats.total === 0) { %>
+    <% if (complaints.length === 0) { %>
+
+    <!-- EMPTY STATE -->
     <div class="section-box empty-state">
         <h2>Empty</h2>
         <p>No Complaints Yet</p>
-        <button class="btn-post" onclick="location.href='/add-complaint'">
-            Post Complaint
-        </button>
+        <a href="/complaints">
+            <button class="btn-post">Post Complaint</button>
+        </a>
     </div>
-    <% } %>
+
+<% } else { %>
+
+    <!-- SHOW COMPLAINTS -->
+    <% complaints.forEach(c => { %>
+        <div class="complaint-card">
+            <div class="card-body">
+                <h3><%= c.title %></h3>
+                <p><%= c.description %></p>
+                <small>
+                    <%= c.category %> | <%= c.status %> | <%= c.date %>
+                </small>
+            </div>
+        </div>
+    <% }) %>
+
+<% } %>
 
 </div>
 

@@ -40,14 +40,15 @@ app.get("/dashboard", (req, res) => {
     if (!currentUser) return res.redirect("/login");
 
     res.render("student/dashboard", {
-        user: currentUser,
-        stats: {
-            total: complaints.length,
-            pending: complaints.filter(c => c.status === "pending").length,
-            inProgress: complaints.filter(c => c.status === "inProgress").length,
-            resolved: complaints.filter(c => c.status === "resolved").length
-        }
-    });
+    user: currentUser,
+    complaints: complaints,   // ✅ REQUIRED
+    stats: {
+        total: complaints.length,
+        pending: complaints.filter(c => c.status === "pending").length,
+        inProgress: complaints.filter(c => c.status === "inProgress").length,
+        resolved: complaints.filter(c => c.status === "resolved").length
+    }
+   });
 });
 
 // COMPLAINT PAGE (Protected)
@@ -64,16 +65,18 @@ app.get("/complaints", (req, res) => {
 
 // REGISTER
 app.post("/register", (req, res) => {
-    const { roll, name, department, year, password } = req.body;
+    const { roll, name, department, year, password, confirmPassword } = req.body;
 
     const existingUser = users.find(u => u.roll === roll);
 
     if (existingUser) {
         return res.send("User already exists ❌");
     }
-     if (password !== confirmPassword) {
+
+    if (password !== confirmPassword) {
         return res.send("Passwords do not match ❌");
     }
+
     const newUser = { roll, name, department, year, password };
     users.push(newUser);
 
