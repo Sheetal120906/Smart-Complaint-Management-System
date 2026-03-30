@@ -1,0 +1,44 @@
+<%- include("../partials/header") %>
+
+<div class="admin-card">
+
+    <!-- Complaint Preview -->
+    <div class="complaint-preview">
+        <h3><%= complaint.title %></h3>
+        <p><%= complaint.description %></p>
+        <div class="stats-line">
+            Agrees: <%= complaint.agree || 0 %> |
+            Disagrees: <%= complaint.disagree || 0 %> |
+            Comments: <%= complaint.comments || 0 %>
+        </div>
+    </div>
+
+    <!-- Update Form -->
+    <form action="/update-status/<%= complaint.id %>" method="POST">
+        
+        <div class="update-box">
+
+            <div class="input-group">
+                <label>Update Status:</label>
+                <select name="status">
+                    <option value="pending" <%= complaint.status === "pending" ? "selected" : "" %>>Pending</option>
+                    <option value="inProgress" <%= complaint.status === "inProgress" ? "selected" : "" %>>In Progress</option>
+                    <option value="resolved" <%= complaint.status === "resolved" ? "selected" : "" %>>Resolved</option>
+                </select>
+            </div>
+
+            <div class="input-group">
+                <label>Management Response:</label>
+                <textarea name="response" placeholder="Write your response..."><%= complaint.response || "" %></textarea>
+            </div>
+
+            <div class="btn-row">
+                <button type="submit" class="btn btn-save">Save Changes</button>
+                <a href="/complaints" class="btn btn-cancel">Cancel</a>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<link rel="stylesheet" href="/css/admin.css">

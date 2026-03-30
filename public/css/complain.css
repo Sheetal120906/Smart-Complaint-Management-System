@@ -1,4 +1,6 @@
 /* Page Background */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
 body {
     background-color: #020f2c;
     font-family: 'Inter', sans-serif;

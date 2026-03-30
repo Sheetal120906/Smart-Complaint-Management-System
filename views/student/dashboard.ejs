@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="/css/header.css">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
 
@@ -68,6 +67,19 @@
             border-radius: 6px;
             color: white;
         }
+
+        .recent-complaints-section {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 600;
+        color: white;
+        margin-bottom: 20px;
+    }
     </style>
 </head>
   
@@ -112,7 +124,7 @@
         <h2>Quick Actions</h2>
 
         <div>
-            <div class="action-btn" onclick="location.href='/add-complaint'">Post Complaint</div>
+            <div class="action-btn" onclick="location.href='/add-complaints'">Post Complaint</div>
             <div class="action-btn" onclick="location.href='/complaints'">All Complaints</div>
             <div class="action-btn" onclick="location.href='/my-complaints'">My Complaints</div>
             <div class="action-btn" onclick="location.href='/feedback'">Feedback</div>
@@ -125,25 +137,19 @@
     <div class="section-box empty-state">
         <h2>Empty</h2>
         <p>No Complaints Yet</p>
-        <a href="/complaints">
+        <a href="/add-complaints">
             <button class="btn-post">Post Complaint</button>
         </a>
     </div>
 
 <% } else { %>
 
+    <div class="recent-complaints-section">
+    <h3 class="section-title">Recent Complaints</h3>
     <!-- SHOW COMPLAINTS -->
-    <% complaints.forEach(c => { %>
-        <div class="complaint-card">
-            <div class="card-body">
-                <h3><%= c.title %></h3>
-                <p><%= c.description %></p>
-                <small>
-                    <%= c.category %> | <%= c.status %> | <%= c.date %>
-                </small>
-            </div>
-        </div>
-    <% }) %>
+
+<%- include("../partials/complainCard", { complaints: complaints }) %>
+ </div>
 
 <% } %>
 

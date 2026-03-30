@@ -1,16 +1,108 @@
-<nav>
-    <div class="logo"><h3>CampusCare</h3></div>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">CampusCare</div>
 
-    <div class="nav-links">
-        <a href="/dashboard">Dashboard</a>
-        <a href="/complaints">All Complaints</a>
-        <a href="/my-complaints">My Complaints</a>
-        <a href="/feedback">Feedback</a>
-    </div>
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/complaints">All Complaints</a></li>
+                <li><a href="/my-complaints">My Complaints</a></li>
+                <li><a href="/feedback">Feedback</a></li>
+            </ul>
 
-    <div class="user-profile">
-        <span><%= user.name %></span>
-        <a href="/logout" class="btn-logout">Logout</a>
+            <div class="nav-user">
+                <span ><%= user.name %></span>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
     </div>
 </nav>
+
+<style>
+    /* Gradient Background matching the screenshots */
+    .navbar {
+       background-color: #172133;
+       border-bottom: 1px solid #2d3748;
+        padding: 0.8rem 0 0.8rem 0;
+        color: white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        font-family: 'Inter', sans-serif;
+    }
+
+    .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between; 
+        align-items: center;
+    }
+
+    /* Brand Style */
+    .nav-brand {
+        font-size: 1.7rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+
+    .nav-content {
+        display: flex;
+        align-items: center;
+        gap: 2.5rem;
+    }
+
+    /* Links Style */
+    .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1.5rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+        color: white;
+    }
+
+    /* User Profile Section */
+    .nav-user {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding-left: 1rem;
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+    }
+
+    /* Logout Button matching the grey/dark style */
+    .logout-btn {
+        background-color: #4b5563;
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .logout-btn:hover {
+        background-color: #374151;
+    }
+</style>
 

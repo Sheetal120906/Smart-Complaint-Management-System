@@ -2,7 +2,6 @@
 <html>
 <head>
     <title>Add Complaint</title>
-    <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/complain.css">
 </head>
 <body>
@@ -14,7 +13,7 @@
         <h2>Post Complaint</h2>
         <p>Your identity will remain anonymous</p>
 
-        <form action="/complaints" method="POST">
+        <form action="/add-complaints" method="POST">
 
             <div class="form-group">
                 <label>Category</label>
@@ -39,7 +38,7 @@
 
             <div class="button-group">
                 <button type="submit" class="btn btn-submit">Post</button>
-                <a href="/complaints" class="btn btn-cancel">Cancel</a>
+                <a href="/dashboard" class="btn btn-cancel">Cancel</a>
             </div>
 
         </form>

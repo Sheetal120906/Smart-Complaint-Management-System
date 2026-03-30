@@ -1,0 +1,86 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+
+        
+        .complaint-card {
+            background: #172133;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .card-body { padding: 20px; }
+
+        .tag { padding: 4px 10px; border-radius: 20px; font-size: 11px; }
+        .tag-dept { background: #475569; }
+        .tag-status { background: #f59e0b; color: black; }
+
+        .interaction-bar {
+            padding: 15px;
+            background: #1e293b;
+        }
+
+        .btn-vote {
+            background: #0f172a;
+            border: 1px solid #334155;
+            padding: 5px 10px;
+            color: white;
+        }
+
+        .comment-box {
+            padding: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        input {
+            flex: 1;
+            padding: 8px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <% complaints.forEach(function(c){ %>
+
+        <div class="complaint-card">
+            <div class="card-body">
+
+                <div style="display:flex; justify-content:space-between;">
+                    <div>
+                        <span class="tag tag-dept"><%= c.category %></span>
+                        <span class="tag tag-status"><%= c.status %></span>
+                    </div>
+                    <span><%= c.date %></span>
+                </div>
+
+                <h3><%= c.title %></h3>
+                <p><%= c.description %></p>
+
+            </div>
+
+            <div class="interaction-bar">
+                <button class="btn-vote">Agree (<%= c.agree %>)</button>
+                <button class="btn-vote">Disagree (<%= c.disagree %>)</button>
+                <span>Comments: <%= c.comments_count %></span>
+            </div>
+
+            <div class="comment-box">
+                <form action="/add-comment/<%= c.id %>" method="POST" style="display:flex; width:100%;">
+                    <input type="text" name="comment" placeholder="Add a comment..." required>
+                    <button type="submit">Post</button>
+                </form>
+            </div>
+        </div>
+
+    <% }) %>
+</body>
+</html>
+

@@ -1,0 +1,77 @@
+.admin-card {
+    background: #172133;
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 30px;
+    border-radius: 12px;
+    border: 1px solid #2d3748;
+}
+
+.complaint-preview h3 {
+    color: #fff;
+    margin-bottom: 8px;
+}
+
+.complaint-preview p {
+    color: #94a3b8;
+}
+
+.stats-line {
+    color: #64748b;
+    font-size: 12px;
+    margin-top: 10px;
+}
+
+.update-box {
+    margin-top: 20px;
+    background: #1e293b;
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.input-group {
+    margin-bottom: 15px;
+}
+
+label {
+    color: #e2e8f0;
+    display: block;
+    margin-bottom: 6px;
+}
+
+select, textarea {
+    width: 100%;
+    background: #0f172a;
+    color: white;
+    border: 1px solid #334155;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.btn-save {
+    background: #10b981;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+}
+
+.btn-cancel {
+    background: #475569;
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+}
+
+.btn-update {
+    background: #3b82f6;
+    padding: 8px 12px;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+}

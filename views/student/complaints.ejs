@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Complaint Feed</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+        body {
+            background-color: #0b1120;
+            color: white;
+            min-height: 100vh;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 50px;
+            background-color: #172133;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .nav-links { display: flex; gap: 25px; }
+        .nav-links a { color: #94a3b8; text-decoration: none; }
+        .nav-links a.active { color: #22d3ee; }
+
+        .container { max-width: 1200px; margin: 30px auto; }
+
+        .feed-header {
+            display: flex;
+            justify-content: space-between;
+            background: #172133;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn-post-main {
+            background: #3b82f6;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            color: white;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<nav>
+    <h3>Campus Voice</h3>
+    <div class="nav-links">
+        <a href="/dashboard">Dashboard</a>
+        <a href="/complaints" class="active">All Complaints</a>
+        <a href="/my-complaints">My Complaints</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <div class="feed-header">
+        <h2>Complaint Feed</h2>
+        <a href="/add-complaints">
+            <button class="btn-post-main">+ Post Complaint</button>
+        </a>
+    </div>
+
+    <!-- LOOP START -->
+    
+   
+
+<%- include("../partials/complainCard", { complaints: complaints }) %>
+
+</div>
+
+</body>
+</html>
