@@ -74,6 +74,10 @@
 
 <%- include("../partials/complainCard", { complaints: complaints }) %>
 
+<% if (complaints.length === 0) { %>
+    <p>No complaints found</p>
+<% } %>
+
 </div>
 
 </body>

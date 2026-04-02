@@ -45,6 +45,62 @@
             border: 1px solid #334155;
             color: white;
         }
+
+        .comment-form {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.comment-form input {
+    flex: 1;
+    padding: 8px;
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: white;
+    border-radius: 6px;
+}
+
+.comment-form button {
+    padding: 8px 12px;
+    background: #38bdf8;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.comments-section {
+    margin-top: 10px;
+    background: #020f2c;
+    padding: 10px;
+    border-radius: 6px;
+}
+
+.comment {
+    padding: 6px 0;
+    border-bottom: 1px solid #334155;
+    color: #e2e8f0;
+    font-size: 14px;
+}
+
+.no-comment {
+    color: #64748b;
+    font-size: 13px;
+}
+
+.btn-delete {
+    background: #ef4444;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.btn-delete:hover {
+    background: #dc2626;
+}
     </style>
 </head>
 <body>
@@ -53,18 +109,28 @@
         <div class="complaint-card">
             <div class="card-body">
 
-                <div style="display:flex; justify-content:space-between;">
-                    <div>
-                        <span class="tag tag-dept"><%= c.category %></span>
-                        <span class="tag tag-status"><%= c.status %></span>
-                    </div>
-                    <span><%= c.date %></span>
-                </div>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
 
-                <h3><%= c.title %></h3>
-                <p><%= c.description %></p>
+    <div>
+        <span class="tag tag-dept"><%= c.category %></span>
+        <span class="tag tag-status"><%= c.status %></span>
+    </div>
 
-            </div>
+    <div style="display:flex; gap:10px; align-items:center;">
+        <span><%= c.date %></span>
+
+        <!-- ✅ DELETE BUTTON HERE -->
+        <% if (user.roll === c.student) { %>
+            <form action="/delete-complaint/<%= c.id %>" method="POST">
+                <button class="btn-delete"
+                    onclick="return confirm('Delete this complaint?')">
+                    Delete
+                </button>
+            </form>
+        <% } %>
+    </div>
+
+</div>
 
             <div class="interaction-bar">
                 <button class="btn-vote">Agree (<%= c.agree %>)</button>
@@ -72,12 +138,26 @@
                 <span>Comments: <%= c.comments_count %></span>
             </div>
 
-            <div class="comment-box">
-                <form action="/add-comment/<%= c.id %>" method="POST" style="display:flex; width:100%;">
-                    <input type="text" name="comment" placeholder="Add a comment..." required>
-                    <button type="submit">Post</button>
-                </form>
-            </div>
+           <div class="comment-box">
+
+    <!-- COMMENT INPUT -->
+    <form action="/add-comment/<%= c.id %>" method="POST" class="comment-form">
+        <input type="text" name="comment" placeholder="Add a comment..." required>
+        <button type="submit">Post</button>
+    </form>
+
+    <!-- COMMENTS LIST -->
+    <div class="comments-section">
+        <% if (c.commentsList.length > 0) { %>
+            <% c.commentsList.forEach(function(cm){ %>
+                <p class="comment"><%= cm %></p>
+            <% }) %>
+        <% } else { %>
+            <p class="no-comment">No comments yet</p>
+        <% } %>
+    </div>
+
+</div>
         </div>
 
     <% }) %>

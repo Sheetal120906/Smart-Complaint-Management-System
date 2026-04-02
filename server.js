@@ -86,6 +86,18 @@ app.get("/complaints", (req, res) => {
     });
 });
 
+app.get("/my-complaints", (req, res) => {
+    if (!currentUser) return res.redirect("/login");
+
+    const myComplaints = complaints.filter(
+        c => c.student === currentUser.roll
+    );
+
+    res.render("student/complaints", {
+        complaints: myComplaints, // ✅ only user complaints
+        user: currentUser
+    });
+});
 // ================== FORM HANDLING ==================
 
 // REGISTER
@@ -211,15 +223,46 @@ app.post("/update-status/:id", (req, res) => {
 });
 
 app.post("/add-comment/:id", (req, res) => {
-    const complaint = complaints.find(c => c.id == req.params.id);
+    const complaintId = Number(req.params.id);
+    const { comment } = req.body;
 
-    if (!complaint) return res.send("Not found");
+    const found = complaints.find(c => c.id === complaintId);
 
-    complaint.commentsList.push(req.body.comment);
-    complaint.comments_count++; // ✅ IMPORTANT
+    if (found) {
+        found.commentsList.push(comment);
+        found.comments_count++;
+    }
 
-    res.redirect("/complaints"); // or "/dashboard"
+    res.redirect("/complaints");
 });
+
+app.post("/agree/:id", (req, res) => {
+    const found = complaints.find(c => c.id == req.params.id);
+    if (found) found.agree++;
+    res.redirect("/complaints");
+});
+
+app.post("/disagree/:id", (req, res) => {
+    const found = complaints.find(c => c.id == req.params.id);
+    if (found) found.disagree++;
+    res.redirect("/complaints");
+});
+
+app.post("/delete-complaint/:id", (req, res) => {
+    if (!currentUser) return res.redirect("/login");
+
+    const complaintId = Number(req.params.id);
+
+    complaints = complaints.filter(c => {
+        if (c.id === complaintId && c.student !== currentUser.roll) {
+            return true;
+        }
+        return c.id !== complaintId;
+    });
+
+    res.redirect("/complaints");
+});
+
 // ================== SERVER ==================
 app.listen(3000, () => {
     console.log("Server running on http://localhost:3000");
