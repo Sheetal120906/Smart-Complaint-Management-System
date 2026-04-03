@@ -2,54 +2,47 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        
-        .complaint-card {
-            background: #172133;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
+<style>
+.complaint-card {
+    background: #172133;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+.card-body { padding: 20px; }
 
-        .card-body { padding: 20px; }
+.tag { padding: 4px 10px; border-radius: 20px; font-size: 11px; }
+.tag-dept { background: #475569; }
+.tag-status { background: #f59e0b; color: black; }
 
-        .tag { padding: 4px 10px; border-radius: 20px; font-size: 11px; }
-        .tag-dept { background: #475569; }
-        .tag-status { background: #f59e0b; color: black; }
+.interaction-bar {
+    padding: 10px;
+    background: #1e293b;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 
-        .interaction-bar {
-            padding: 15px;
-            background: #1e293b;
-        }
+.btn-vote {
+    background: #0f172a;
+    border: 1px solid #334155;
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+}
 
-        .btn-vote {
-            background: #0f172a;
-            border: 1px solid #334155;
-            padding: 5px 10px;
-            color: white;
-        }
+.comment-box {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
 
-        .comment-box {
-            padding: 10px;
-            display: flex;
-            gap: 10px;
-        }
-
-        input {
-            flex: 1;
-            padding: 8px;
-            background: #0f172a;
-            border: 1px solid #334155;
-            color: white;
-        }
-
-        .comment-form {
+.comment-form {
     display: flex;
     gap: 8px;
-    margin-top: 10px;
 }
 
 .comment-form input {
@@ -70,7 +63,6 @@
 }
 
 .comments-section {
-    margin-top: 10px;
     background: #020f2c;
     padding: 10px;
     border-radius: 6px;
@@ -80,12 +72,10 @@
     padding: 6px 0;
     border-bottom: 1px solid #334155;
     color: #e2e8f0;
-    font-size: 14px;
 }
 
 .no-comment {
     color: #64748b;
-    font-size: 13px;
 }
 
 .btn-delete {
@@ -94,73 +84,103 @@
     border: none;
     padding: 5px 10px;
     border-radius: 6px;
-    cursor: pointer;
-    font-size: 12px;
 }
-
-.btn-delete:hover {
-    background: #dc2626;
-}
-    </style>
+</style>
 </head>
+
 <body>
-    <% complaints.forEach(function(c){ %>
 
-        <div class="complaint-card">
-            <div class="card-body">
+<% complaints.forEach(function(c){ %>
 
-                <div style="display:flex; justify-content:space-between; align-items:center;">
+<div class="complaint-card">
+<div class="card-body">
 
+<!-- HEADER -->
+<div style="display:flex; justify-content:space-between; align-items:center;">
     <div>
         <span class="tag tag-dept"><%= c.category %></span>
         <span class="tag tag-status"><%= c.status %></span>
     </div>
 
     <div style="display:flex; gap:10px; align-items:center;">
-        <span><%= c.date %></span>
+       <span>
+    <%= new Date(c.date).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    }) %>
+</span>
 
-        <!-- ✅ DELETE BUTTON HERE -->
-        <% if (user.roll === c.student) { %>
-            <form action="/delete-complaint/<%= c.id %>" method="POST">
-                <button class="btn-delete"
-                    onclick="return confirm('Delete this complaint?')">
-                    Delete
-                </button>
-            </form>
+        <% if (user.roll === c.student || user.role === "manager") { %>
+        <form action="/delete-complaint/<%= c.id %>" method="POST">
+            <button class="btn-delete">Delete</button>
+        </form>
         <% } %>
     </div>
+</div>
+
+<!-- ✅ TITLE + DESCRIPTION -->
+<h3 style="margin-top:10px; color:#38bdf8;">
+    <%= c.title %>
+</h3>
+
+<p style="color:#e2e8f0;">
+    <%= c.description %>
+</p>
+
+<!-- ✅ VOTING -->
+<div class="interaction-bar">
+
+<form action="/agree/<%= c.id %>" method="POST">
+    <input type="hidden" name="redirectTo" value="<%= currentPage %>">
+    <button class="btn-vote">👍 Agree (<%= c.agree %>)</button>
+</form>
+
+<form action="/disagree/<%= c.id %>" method="POST">
+    <input type="hidden" name="redirectTo" value="<%= currentPage %>">
+    <button class="btn-vote">👎 Disagree (<%= c.disagree %>)</button>
+</form>
+
+<span>Comments: <%= c.comments_count %></span>
 
 </div>
 
-            <div class="interaction-bar">
-                <button class="btn-vote">Agree (<%= c.agree %>)</button>
-                <button class="btn-vote">Disagree (<%= c.disagree %>)</button>
-                <span>Comments: <%= c.comments_count %></span>
-            </div>
+<!-- COMMENTS -->
+<div class="comment-box">
 
-           <div class="comment-box">
+<form action="/add-comment/<%= c.id %>" method="POST" class="comment-form">
+    <input type="hidden" name="redirectTo" value="<%= currentPage %>">
+    <input type="text" name="comment" placeholder="Add comment..." required>
+    <button type="submit">Post</button>
+</form>
 
-    <!-- COMMENT INPUT -->
-    <form action="/add-comment/<%= c.id %>" method="POST" class="comment-form">
-        <input type="text" name="comment" placeholder="Add a comment..." required>
-        <button type="submit">Post</button>
-    </form>
+<button class="btn-vote" onclick="toggleComments('<%= c.id %>')">
+    Show/Hide Comments
+</button>
 
-    <!-- COMMENTS LIST -->
-    <div class="comments-section">
-        <% if (c.commentsList.length > 0) { %>
-            <% c.commentsList.forEach(function(cm){ %>
-                <p class="comment"><%= cm %></p>
-            <% }) %>
-        <% } else { %>
-            <p class="no-comment">No comments yet</p>
-        <% } %>
-    </div>
+<div id="comments-<%= c.id %>" class="comments-section" style="display:none;">
+    <% if (c.commentsList && c.commentsList.length > 0) { %>
+        <% c.commentsList.forEach(function(cm){ %>
+            <p class="comment"><%= cm %></p>
+        <% }) %>
+    <% } else { %>
+        <p class="no-comment">No comments yet</p>
+    <% } %>
+</div>
 
 </div>
-        </div>
 
-    <% }) %>
+</div>
+</div>
+
+<% }) %>
+
+<script>
+function toggleComments(id) {
+    const box = document.getElementById("comments-" + id);
+    box.style.display = (box.style.display === "none") ? "block" : "none";
+}
+</script>
+
 </body>
 </html>
-

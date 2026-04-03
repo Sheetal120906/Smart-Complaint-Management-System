@@ -1,0 +1,95 @@
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">CampusCare</div>
+
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="/manager">Dashboard</a></li>
+                <li><a href="/complaints">Complaints</a></li>
+                <li><a href="/feedback">Feedback Polls</a></li>
+            </ul>
+
+            <div class="nav-user">
+                <span><%= user.name %></span>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<style>
+    .navbar {
+       background-color: #172133;
+       border-bottom: 1px solid #2d3748;
+       padding: 0.8rem 0;
+       color: white;
+       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+       font-family: 'Inter', sans-serif;
+    }
+
+    .nav-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .nav-brand {
+        font-size: 1.7rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+
+    .nav-content {
+        display: flex;
+        align-items: center;
+        gap: 2.5rem;
+    }
+
+    .nav-links {
+        list-style: none;
+        display: flex;
+        gap: 1.5rem;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+        color: white;
+    }
+
+    .nav-user {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding-left: 1rem;
+        border-left: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .logout-btn {
+        background-color: #4b5563;
+        color: white;
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+    .logout-btn:hover {
+        background-color: #374151;
+    }
+</style>
