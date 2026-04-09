@@ -131,205 +131,136 @@
             color: #9ca3af;
         }
 
-        /* --- Complaint Card --- */
-        .complaint-item {
-            background: #172133;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
-            margin-bottom: 20px;
-            transition: transform 0.2s;
-            position: relative;
-        }
+        /* ===== Dark Background & Card ===== */
+body {
+    background-color: #0f172a; /* dark background base */
+    color: #e2e8f0; /* light text */
+}
 
-        .complaint-item:hover {
-            transform: translateY(-2px);
-        }
+/* Complaint card */
+.complaint-card {
+    background: #172133; /* deep navy/dark slate */
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #334155; /* subtle border for depth */
+}
 
-        .top-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-        }
+/* Card body spacing */
+.complaint-card h4 {
+    font-size: 1.25rem;
+    color: #f1f5f9; /* light text */
+    margin-bottom: 8px;
+}
 
-        .badges {
-            display: flex;
-            gap: 8px;
-        }
+.complaint-card p {
+    font-size: 15px;
+    color: #cbd5e1; /* slightly muted text */
+    margin: 4px 0;
+}
 
-        .badge {
-            padding: 3px 10px;
-            border-radius: 99px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
+/* Votes summary */
+.votes-summary {
+    padding: 8px 0;
+    color: #94a3b8; /* medium gray text */
+}
 
-        .badge-dept {
-            background: #4b5563;
-            color: white;
-        }
+/* Comments section */
+.comments-section {
+    background: #1e293b; /* darker surface */
+    padding: 8px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
 
-        .badge-status {
-            background: #fbbf24;
-            color: #92400e;
-        }
+.comments-section ul li {
+    padding: 6px 0;
+    border-bottom: 1px solid #334155;
+    color: #e2e8f0;
+}
 
-        .date {
-            color: #9ca3af;
-            font-size: 12px;
-        }
+.comments-section p {
+    color: #64748b;
+}
 
-        .item-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 6px;
-        }
+/* Management Reply Box */
+.management-reply-box {
+    background: #1e293b; /* dark surface */
+    border-left: 4px solid #22c55e; /* green accent */
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 4px;
+}
 
-        .item-desc {
-            font-size: 14px;
-            color: #9ca3af;
-            margin-bottom: 12px;
-        }
+.management-reply-box h4 {
+    color: #a5d6a7; /* soft green label */
+    font-size: 0.9rem;
+}
 
-        .item-stats {
-            font-size: 13px;
-            color: #9ca3af;
-            display: flex;
-            gap: 15px;
-        }
+.management-reply-box p {
+    color: #d1fae5; /* light green text */
+}
 
-        /* --- Actions Buttons --- */
-        .item-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 15px;
-            flex-wrap: wrap;
-        }
+/* Manager Action Buttons */
+.manager-actions button,
+.manager-actions form button {
+    background: #0f172a;
+    border: 1px solid #334155;
+    padding: 8px 12px;
+    color: #ffffff;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
 
-        .btn {
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            color: white;
-            transition: background 0.2s;
-        }
+.manager-actions button:hover,
+.manager-actions form button:hover {
+    background: #1e293b;
+}
 
-        .btn-update {
-            background: #3b82f6;
-        }
+/* Expandable Update Section */
+.status-update-box {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 20px;
+    margin-top: 15px;
+}
 
-        .btn-update:hover {
-            background: #2563eb;
-        }
+/* Update form inputs */
+.status-update-box input[type="text"],
+.status-update-box textarea {
+    width: 100%;
+    background: #0f172a;
+    border: 1px solid #334155;
+    color: #e2e8f0;
+    border-radius: 6px;
+    padding: 10px;
+    margin-top: 8px;
+    font-size: 15px;
+}
 
-        .btn-delete {
-            background: #ef4444;
-        }
+/* Buttons in update section */
+.status-update-box .btn-save {
+    background: #22c55e; /* green accent */
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+}
 
-        .btn-delete:hover {
-            background: #dc2626;
-        }
+.status-update-box .btn-save:hover {
+    background: #16a34a;
+}
 
-        /* --- Status Update Modal --- */
-        .status-update-box {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: #172133;
-            padding: 25px 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
-            display: none;
-            width: 100%;
-            max-width: 500px;
-            z-index: 1000;
-        }
-    
-        .status-update-box .form-group {
-            margin-bottom: 15px;
-        }
+.status-update-box .btn-cancel {
+    background: #64748b; /* muted gray */
+    color: white;
+    padding: 10px 18px;
+    border-radius: 6px;
+}
 
-        .status-update-box label {
-            display: block;
-            font-size: 14px;
-            color: #9ca3af;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .status-select,
-        .response-textarea {
-            width: 100%;
-            padding: 8px 10px;
-            border-radius: 6px;
-            border: 1px solid #4b5563;
-            background: #0f172a;
-            color: white;
-            font-size: 13px;
-        }
-
-        .response-textarea {
-            height: 80px;
-            resize: none;
-        }
-
-        .button-group {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-        }
-
-        .btn-save {
-            background: #3b82f6;
-            padding: 6px 14px;
-            border-radius: 6px;
-            border: none;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-save:hover {
-            background: #2563eb;
-        }
-
-        .btn-cancel {
-            background: #ef4444;
-            padding: 6px 14px;
-            border-radius: 6px;
-            border: none;
-            color: white;
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .btn-cancel:hover {
-            background: #dc2626;
-        }
-
-        /* --- Responsive --- */
-        @media (max-width: 768px) {
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .filter-bar {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px;
-            }
-
-            .item-actions {
-                justify-content: flex-start;
-            }
-        }
+.status-update-box .btn-cancel:hover {
+    background: #475569;
+}
     </style>
 </head>
 
@@ -386,78 +317,13 @@
                     </select>
                 </div>
             </div>
-            <div class="showing-text">
-                Showing <%= complaints.length %> of <%= complaints.length %> complaints
-            </div>
-        </div>
-
-        <!-- Complaints List -->
-        <% complaints.forEach(c => { %>
-        <div class="complaint-item">
-            <div class="top-row">
-                <div class="badges">
-                    <span class="badge badge-dept"><%= c.category %></span>
-                    <span class="badge badge-status">
-                        <%= c.status === 'pending' ? 'Pending' : c.status === 'inProgress' ? 'In Progress' : 'Resolved' %>
-                    </span>
-                </div>
-                <span class="date"><%= new Date(c.created_at).toLocaleDateString() %></span>
-            </div>
-
-            <h2 class="item-title"><%= c.title %></h2>
-            <p class="item-desc"><%= c.description %></p>
-
-            <div class="item-stats">
-                <span>Agrees: <%= c.agree %></span>
-                <span>Disagrees: <%= c.disagree %></span>
-                <span>Comments: <%= c.commentsList ? c.commentsList.length : 0 %></span>
-            </div>
-
-            <div class="item-actions">
-                <button type="button" class="btn btn-update" onclick="openStatusBox('<%= c.id %>')">
-                    Update Status
-                </button>
-                <form action="/delete-complaint/<%= c.id %>" method="POST" style="display:inline;">
-                    <button type="submit" class="btn btn-delete">Delete</button>
-                </form>
-            </div>
-
-            <!-- Status Update Modal -->
-            <div class="status-update-box" id="statusBox-<%= c.id %>">
-                <form action="/manager/update-status/<%= c.id %>" method="POST">
-                    <div class="form-group">
-                        <label>Update Status:</label>
-                        <select name="status" class="status-select">
-                            <option value="pending" <%= c.status === 'pending' ? 'selected' : '' %>>Pending</option>
-                            <option value="inProgress" <%= c.status === 'inProgress' ? 'selected' : '' %>>In Progress
-                            </option>
-                            <option value="resolved" <%= c.status === 'resolved' ? 'selected' : '' %>>Resolved</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Management Response:</label>
-                        <textarea name="response" class="response-textarea"><%= c.response %></textarea>
-                    </div>
-                    <div class="button-group">
-                        <button type="submit" class="btn-save">Save Changes</button>
-                        <button type="button" class="btn-cancel" onclick="closeStatusBox('<%= c.id %>')">Cancel</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <% }) %>
-    </div>
-
-    <script>
-        function openStatusBox(id) {
-            document.getElementById(`statusBox-${id}`).style.display = 'block';
-        }
-
-        function closeStatusBox(id) {
-            document.getElementById(`statusBox-${id}`).style.display = 'none';
-        }
-    </script>
-
+       </div>
+            <%- include("../partials/complainCard", { 
+    complaints: complaints, 
+    user: user, 
+    currentPage: currentPage 
+}) %>
+           
 </body>
 
 </html>

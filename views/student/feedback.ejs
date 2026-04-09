@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>feedback</title>
+    <style>
+        body {
+    margin: 0;
+    font-family: 'Segoe UI';
+    background: linear-gradient(135deg, #020f2c);
+    color: white;
+}
+
+/* Container */
+.container {
+    padding: 30px;
+}
+
+/* Container */
+.poll-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+/* Card */
+.poll-card {
+    background: #1e293b;
+    width: 500px;
+    padding: 25px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+    text-align: center;
+}
+
+/* Title */
+.poll-card h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* Description */
+.poll-card p {
+    font-size: 14px;
+    color: #cbd5f5;
+    margin: 10px 0 20px;
+}
+
+/* Button */
+.btn-primary {
+    background: #2563eb;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-primary:hover {
+    background: #1d4ed8;
+}
+
+.stars {
+    margin: 15px 0;
+}
+
+.stars span {
+    cursor: pointer;
+    font-size: 26px;
+    margin: 0 3px;
+    opacity: 0.4;
+    transition: 0.2s;
+}
+
+.stars span:hover {
+    transform: scale(1.2);
+}
+
+/* Active stars */
+.active-star {
+    color: gold;
+    opacity: 1;
+}
+textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #0f172a;
+    color: white;
+    margin-top: 10px;
+    resize: none;
+}
+
+.rate-box {
+    background: #0f172a;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+button[type="submit"] {
+    margin-top: 10px;
+    background: #22c55e;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+button[type="submit"]:hover {
+    background: #16a34a;
+}
+.poll-card:hover {
+    transform: translateY(-5px);
+    transition: 0.3s;
+}
+
+    </style>
+</head>
+<body>
+
+   <%- include("../partials/header") %>
+    <div class="container">
+
+    <!-- HEADER -->
+    <div class="header">
+        <h1>Feedback Polls</h1>
+    </div>
+   <% polls.forEach(p => { %>
+
+<div class="poll-card">
+
+    <h3><%= p.title %></h3>
+    <p><%= p.description %></p>
+
+    <!-- Rate Button -->
+    <button onclick="openRating('<%= p.id %>')" class="btn-primary">
+        Rate Now
+    </button>
+
+    <!-- Rating Box -->
+    <div id="rate-box-<%= p.id %>" class="rate-box" style="display:none; margin-top:10px;">
+
+        <form action="/submit-rating/<%= p.id %>" method="POST">
+
+            <!-- ⭐ STARS -->
+            <div class="stars">
+                <% for(let i=1;i<=5;i++){ %>
+                <span 
+                      onclick="setRating('<%= i %>', '<%= p.id %>')" 
+                     class="<%= p.rating >= i ? 'active-star' : '' %>">
+                    ⭐
+                 </span>
+              <% } %>
+            </div>
+
+            <!-- Hidden rating -->
+            <input type="hidden" 
+                   name="rating" 
+                   id="rating-<%= p.id %>" 
+                   value="<%= p.rating || '' %>" 
+                   required>
+
+            <!-- Comment -->
+            <textarea name="comment"><%= p.comment || "" %></textarea>
+
+            <button type="submit">Submit Rating</button>
+            <button type="button" onclick="openRating('<%= p.id %>')">Cancel</button>
+
+        </form>
+    </div>
+
+</div>
+
+<% }) %>
+
+<script>
+function openRating(id){
+    const box = document.getElementById("rate-box-" + id);
+    box.style.display = (box.style.display === "none") ? "block" : "none";
+}
+
+function setRating(value, id) {
+    value = parseInt(value); // ✅ fix
+
+    document.getElementById("rating-" + id).value = value;
+
+    const stars = document.querySelectorAll(`#rate-box-${id} span`);
+
+    stars.forEach((star, index) => {
+        if (index < value) {
+            star.classList.add("active-star");
+        } else {
+            star.classList.remove("active-star");
+        }
+    });
+}
+</script>
+
+</body>
+</html>

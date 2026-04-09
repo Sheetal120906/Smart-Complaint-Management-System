@@ -1,22 +1,49 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-.complaint-card {
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .complaint-card {
     background: #172133;
     border-radius: 12px;
     margin-bottom: 20px;
 }
+
+.complaint-card:hover {
+    transform: translateY(-2px);
+    transition: 0.2s;
+}
 .card-body { padding: 20px; }
 
-.tag { padding: 4px 10px; border-radius: 20px; font-size: 11px; }
-.tag-dept { background: #475569; }
-.tag-status { background: #f59e0b; color: black; }
 
+/* TAGS */
+.tag {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+}
+
+.tag-dept { background: #475569; }
+
+/* STATUS COLORS */
+.tag-pending {
+    background: #f59e0b;
+    color: black;
+}
+
+.tag-inProgress {
+    background: #38bdf8;
+    color: black;
+}
+
+.tag-resolved {
+    background: #22c55e;
+    color: white;
+}
+
+/* INTERACTION BAR */
 .interaction-bar {
     padding: 10px;
     background: #1e293b;
@@ -25,14 +52,21 @@
     align-items: center;
 }
 
+/* BUTTON */
 .btn-vote {
     background: #0f172a;
     border: 1px solid #334155;
     padding: 5px 10px;
     color: white;
     cursor: pointer;
+    border-radius: 6px;
 }
 
+.btn-vote:hover {
+    background: #1e293b;
+}
+
+/* COMMENTS */
 .comment-box {
     padding: 10px;
     display: flex;
@@ -62,6 +96,11 @@
     cursor: pointer;
 }
 
+.comment-form button:hover {
+    background: #0ea5e9;
+}
+
+/* COMMENTS LIST */
 .comments-section {
     background: #020f2c;
     padding: 10px;
@@ -78,19 +117,43 @@
     color: #64748b;
 }
 
+/* DELETE BUTTON */
 .btn-delete {
     background: #ef4444;
     color: white;
     border: none;
     padding: 5px 10px;
     border-radius: 6px;
+    cursor: pointer;
 }
-</style>
+
+.btn-delete:hover {
+    background: #dc2626;
+}
+
+/* RESPONSE BOX (DARK THEME MATCH) */
+.response-box {
+    background: #022c22;              /* dark green bg */
+    border-left: 5px solid #22c55e;   /* green border */
+    padding: 12px;
+    border-radius: 6px;
+    margin-top: 10px;
+}
+
+.response-box strong {
+    color: #4ade80;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.response-box p {
+    color: #d1fae5;
+    margin: 0;
+}
+    </style>
 </head>
-
 <body>
-
-<% complaints.forEach(function(c){ %>
+    <% complaints.forEach(function(c){ %>
 
 <div class="complaint-card">
 <div class="card-body">
@@ -99,17 +162,26 @@
 <div style="display:flex; justify-content:space-between; align-items:center;">
     <div>
         <span class="tag tag-dept"><%= c.category %></span>
-        <span class="tag tag-status"><%= c.status %></span>
+
+        <!-- STATUS COLOR -->
+        <span class="tag 
+    <%= c.status === 'pending' ? 'tag-pending' : '' %>
+    <%= c.status === 'in-progress' ? 'tag-progress' : '' %>
+    <%= c.status === 'resolved' ? 'tag-resolved' : '' %>
+">
+    <%= c.status === "in-progress" ? "In Progress" : 
+         c.status.charAt(0).toUpperCase() + c.status.slice(1) %>
+</span>
     </div>
 
     <div style="display:flex; gap:10px; align-items:center;">
-       <span>
-    <%= new Date(c.date).toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric'
-    }) %>
-</span>
+        <span>
+            <%= new Date(c.date).toLocaleDateString('en-IN', {
+                day: 'numeric',
+                month: 'short',
+                year: 'numeric'
+            }) %>
+        </span>
 
         <% if (user.roll === c.student || user.role === "manager") { %>
         <form action="/delete-complaint/<%= c.id %>" method="POST">
@@ -119,16 +191,21 @@
     </div>
 </div>
 
-<!-- ✅ TITLE + DESCRIPTION -->
-<h3 style="margin-top:10px; color:#38bdf8;">
-    <%= c.title %>
-</h3>
+<!-- TITLE -->
+<h3 style="margin-top:10px; color:#38bdf8;"><%= c.title %></h3>
 
-<p style="color:#e2e8f0;">
-    <%= c.description %>
-</p>
+<!-- DESCRIPTION -->
+<p style="color:#e2e8f0;"><%= c.description %></p>
 
-<!-- ✅ VOTING -->
+<!-- RESPONSE (FOR BOTH) -->
+<% if (c.response) { %>
+<div class="response-box">
+    <strong>Management Response:</strong>
+    <p><%= c.response %></p>
+</div>
+<% } %>
+
+<!-- VOTING -->
 <div class="interaction-bar">
 
 <form action="/agree/<%= c.id %>" method="POST">
@@ -170,6 +247,35 @@
 
 </div>
 
+<!-- MANAGER ONLY -->
+<% if (user.role === "manager") { %>
+
+<button onclick="toggleUpdateCard('<%= c.id %>')" class="btn-vote">
+    Update Status
+</button>
+
+<div id="update-box-<%= c.id %>" style="display:none; margin-top:10px;">
+<form action="/update-complaint-status/<%= c.id %>" method="POST">
+<h3>Update Status:</h3>
+<!--  DROPDOWN -->
+<select name="status" required>
+    <option value="pending" <%= c.status === "pending" ? "selected" : "" %>>Pending</option>
+    <option value="inProgress" <%= c.status === "inProgress" ? "selected" : "" %>>In Progress</option>
+    <option value="resolved" <%= c.status === "resolved" ? "selected" : "" %>>Resolved</option>
+</select>
+<h3>Management Response:</h3>
+<textarea name="response" placeholder="Enter response..." style="width:100%; margin-top:5px;">
+<%= c.response || "" %>
+</textarea>
+
+<button type="submit">Save</button>
+<button type="button" onclick="toggleUpdateCard('<%= c.id %>')">Cancel</button>
+
+</form>
+</div>
+
+<% } %>
+
 </div>
 </div>
 
@@ -180,7 +286,11 @@ function toggleComments(id) {
     const box = document.getElementById("comments-" + id);
     box.style.display = (box.style.display === "none") ? "block" : "none";
 }
-</script>
 
+function toggleUpdateCard(id) {
+    const box = document.getElementById("update-box-" + id);
+    box.style.display = (box.style.display === "none" || box.style.display === "") ? "block" : "none";
+}
+</script>
 </body>
 </html>

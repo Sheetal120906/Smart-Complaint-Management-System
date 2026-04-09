@@ -4,6 +4,7 @@ const mysql = require("mysql2");
 const db = require("./db");
 const session = require("express-session");
 
+
 const app = express();
 
 // ================== SESSION SETUP ==================
@@ -121,7 +122,7 @@ app.get("/my-complaints", (req, res) => {
                 complaints,
                 viewType: "mine",
                 user: req.session.user,
-                currentPage: "/my-complaints" // ✅ pass currentPage here
+                currentPage: "/my-complaints" // pass currentPage here
             });
         }
     );
@@ -167,6 +168,87 @@ app.get("/manager", (req, res) => {
             });
     });
 });
+
+app.get("/manager/complain", (req, res) => {
+    if (!req.session.user || req.session.user.role !== "manager") {
+        return res.redirect("/login");
+    }
+
+    db.query("SELECT * FROM complaints", (err, complaints) => {
+        if (err) throw err;
+
+        if (complaints.length === 0) {
+            return res.render("manager/complain", {
+                complaints: [],
+                user: req.session.user,
+                currentPage: "/manager/complain"
+            });
+        }
+
+        let count = 0;
+
+        complaints.forEach(c => {
+            db.query(
+                "SELECT comment_text FROM comments WHERE complaint_id = ?",
+                [c.id],
+                (err, comments) => {
+
+                    c.commentsList = (comments || []).map(cm => cm.comment_text);
+
+                    count++;
+
+                    if (count === complaints.length) {
+                        res.render("manager/complain", {
+                            complaints,              //  FIXED
+                            user: req.session.user,
+                            currentPage: "/manager/complain"
+                        });
+                    }
+                }
+            );
+        });
+    });
+});
+
+// Show all polls
+app.get("/feedback", (req, res) => {
+    if (!req.session.user) return res.redirect("/login");
+
+    db.query("SELECT * FROM polls", (err, polls) => {
+        if (err) throw err;
+
+        res.render("manager/feedback", {
+            polls,
+            showForm: false,
+            user: req.session.user   // IMPORTANT
+        });
+    });
+});
+
+app.get("/create-poll", (req, res) => {
+    if (!req.session.user) return res.redirect("/login");
+
+    res.render("manager/feedback", {
+        polls: [],
+        showForm: true,
+        user: req.session.user   // IMPORTANT
+    });
+});
+// Create poll
+app.post("/create-poll", (req, res) => {
+    if (!req.session.user) return res.redirect("/login");
+
+    const { title, description, category } = req.body;
+
+    db.query(
+        "INSERT INTO polls (title, description, category, status) VALUES (?, ?, ?, ?)",
+        [title, description, category ],
+        (err) => {
+            if (err) throw err;
+            res.redirect("/feedback");
+        }
+    );
+});
 // ================== REGISTER ==================
 app.post("/register", (req, res) => {
     const { roll, name, department, year, password } = req.body;
@@ -175,7 +257,7 @@ app.post("/register", (req, res) => {
         "INSERT INTO users (roll, name, department, year, password) VALUES (?, ?, ?, ?, ?)",
         [roll, name, department, year, password],
         (err) => {
-            if (err) return res.send("User already exists ❌");
+            if (err) return res.send("User already exists ");
             res.redirect("/login");
         }
     );
@@ -192,7 +274,7 @@ app.post("/login", (req, res) => {
             req.session.user = { name: "Admin", role: "manager" };
             return res.redirect("/manager"); // Redirect to manager dashboard
         } else {
-            return res.send("Invalid manager login ❌");
+            return res.send("Invalid manager login ");
         }
     }
 
@@ -202,7 +284,7 @@ app.post("/login", (req, res) => {
         [roll, password],
         (err, result) => {
             if (err) throw err;
-            if (result.length === 0) return res.send("Invalid credentials ❌");
+            if (result.length === 0) return res.send("Invalid credentials ");
 
             req.session.user = result[0];
             res.redirect("/dashboard");
@@ -228,7 +310,7 @@ app.post("/add-complaints", (req, res) => {
 
 // ================== ADD COMMENT ==================
 app.post("/add-comment/:id", (req, res) => {
-    if (!req.session.user) return res.status(401).send("Login required ❌");
+    if (!req.session.user) return res.status(401).send("Login required ");
 
     const { comment, redirectTo } = req.body;
 
@@ -251,7 +333,7 @@ app.post("/add-comment/:id", (req, res) => {
 
 // ================== VOTE (AGREE) ==================
 app.post("/agree/:id", (req, res) => {
-    if (!req.session.user) return res.status(401).send("Login required ❌");
+    if (!req.session.user) return res.status(401).send("Login required ");
 
     const complaintId = req.params.id;
     const userRoll = req.session.user.roll;
@@ -264,6 +346,7 @@ app.post("/agree/:id", (req, res) => {
             if (err) throw err;
 
             if (result.length === 0) {
+                // First vote
                 db.query(
                     "INSERT INTO votes (complaint_id, user_roll, vote_type) VALUES (?, ?, 'agree')",
                     [complaintId, userRoll],
@@ -276,15 +359,16 @@ app.post("/agree/:id", (req, res) => {
                     }
                 );
             } else {
-                const previousVote = result[0].vote_type;
-                if (previousVote === "agree") return res.redirect(redirectTo);
+                const prev = result[0].vote_type;
+
+                if (prev === "agree") return res.redirect(redirectTo);
 
                 db.query(
                     "UPDATE votes SET vote_type = 'agree' WHERE complaint_id = ? AND user_roll = ?",
                     [complaintId, userRoll],
                     () => {
                         db.query(
-                            "UPDATE complaints SET agree = agree + 1, disagree = disagree - 1 WHERE id = ?",
+                            "UPDATE complaints SET agree = agree + 1, disagree = GREATEST(disagree - 1,0) WHERE id = ?",
                             [complaintId],
                             () => res.redirect(redirectTo)
                         );
@@ -294,10 +378,9 @@ app.post("/agree/:id", (req, res) => {
         }
     );
 });
-
 // ================== VOTE (DISAGREE) ==================
 app.post("/disagree/:id", (req, res) => {
-    if (!req.session.user) return res.status(401).send("Login required ❌");
+    if (!req.session.user) return res.status(401).send("Login required ");
 
     const complaintId = req.params.id;
     const userRoll = req.session.user.roll;
@@ -322,15 +405,16 @@ app.post("/disagree/:id", (req, res) => {
                     }
                 );
             } else {
-                const previousVote = result[0].vote_type;
-                if (previousVote === "disagree") return res.redirect(redirectTo);
+                const prev = result[0].vote_type;
+
+                if (prev === "disagree") return res.redirect(redirectTo);
 
                 db.query(
                     "UPDATE votes SET vote_type = 'disagree' WHERE complaint_id = ? AND user_roll = ?",
                     [complaintId, userRoll],
                     () => {
                         db.query(
-                            "UPDATE complaints SET disagree = disagree + 1, agree = agree - 1 WHERE id = ?",
+                            "UPDATE complaints SET disagree = disagree + 1, agree = GREATEST(agree - 1,0) WHERE id = ?",
                             [complaintId],
                             () => res.redirect(redirectTo)
                         );
@@ -353,12 +437,16 @@ app.post("/delete-complaint/:id", (req, res) => {
         (err, result) => {
             if (err) throw err;
 
-            if (result.length === 0) return res.send("Complaint not found ❌");
+            if (result.length === 0) return res.send("Complaint not found ");
 
             const complaint = result[0];
 
-            if (req.session.user.role !== "manager" && complaint.student !== req.session.user.roll) {
-                return res.send("Unauthorized ❌ You can delete only your complaint");
+            //  Permission check
+            if (
+                req.session.user.role !== "manager" &&
+                complaint.student !== req.session.user.roll
+            ) {
+                return res.send("Unauthorized ");
             }
 
             db.query(
@@ -367,32 +455,154 @@ app.post("/delete-complaint/:id", (req, res) => {
                 (err) => {
                     if (err) throw err;
 
-                    if (req.session.user.role === "manager") {
-                        res.redirect("/manager");
-                    } else {
-                        res.redirect("/dashboard");
+                    res.redirect(
+                        req.session.user.role === "manager"
+                            ? "/manager/dashboard"
+                            : "/dashboard"
+                    );
+                }
+            );
+        }
+    );
+});
+app.post("/update-complaint-status/:id", (req, res) => {
+    console.log("ROUTE HIT");
+    console.log("BODY:", req.body);
+
+    const { status, response } = req.body;
+
+    db.query(
+        "UPDATE complaints SET status = ?, response = ? WHERE id = ?",
+        [status, response, req.params.id],
+        (err) => {
+            if (err) {
+                console.log(" DB ERROR FULL:", err);
+                return res.send(err.sqlMessage); //  SHOW ACTUAL ERROR
+            }
+
+            res.redirect("/manager/complain");
+        }
+    );
+});
+
+//============ FEEDBACK SYSTEM =============================
+app.get("/student/feedback", (req, res) => {
+    if (!req.session.user) return res.redirect("/login");
+
+    const student = req.session.user.roll;
+
+    db.query(`
+        SELECT p.*, r.rating, r.comment
+        FROM polls p
+        LEFT JOIN ratings r 
+        ON p.id = r.poll_id AND r.student = ?
+        WHERE p.is_active = 1
+    `, [student], (err, polls) => {
+
+        if (err) {
+            console.log(err);
+            return res.send("DB Error");
+        }
+
+        res.render("student/feedback", {
+            polls,
+            user: req.session.user
+        });
+    });
+});
+
+app.post("/submit-rating/:id", (req, res) => {
+    const { rating, comment } = req.body;
+    const student = req.session.user.roll;
+    const pollId = req.params.id;
+
+    // 🔍 Check if already exists
+    db.query(
+        "SELECT * FROM ratings WHERE poll_id = ? AND student = ?",
+        [pollId, student],
+        (err, result) => {
+            if (err) return res.send("Error");
+
+            if (result.length > 0) {
+                // 🔁 UPDATE existing rating
+                db.query(
+                    "UPDATE ratings SET rating = ?, comment = ? WHERE poll_id = ? AND student = ?",
+                    [rating, comment, pollId, student],
+                    (err2) => {
+                        if (err2) return res.send("Error");
+
+                        res.redirect("/student/feedback");
                     }
+                );
+            } else {
+                //  INSERT new rating
+                db.query(
+                    "INSERT INTO ratings (poll_id, student, rating, comment) VALUES (?, ?, ?, ?)",
+                    [pollId, student, rating, comment],
+                    (err3) => {
+                        if (err3) return res.send("Error");
+
+                        res.redirect("/student/feedback");
+                    }
+                );
+            }
+        }
+    );
+});
+
+app.get("/poll-results/:id", (req, res) => {
+    const pollId = req.params.id;
+
+    //  Average + total
+    db.query(
+        "SELECT AVG(rating) as avg, COUNT(*) as total FROM ratings WHERE poll_id = ?",
+        [pollId],
+        (err, stats) => {
+
+            //  Distribution
+            db.query(
+                "SELECT rating, COUNT(*) as count FROM ratings WHERE poll_id = ? GROUP BY rating",
+                [pollId],
+                (err2, dist) => {
+
+                    // convert to full 1–5 structure
+                    let distribution = {1:0,2:0,3:0,4:0,5:0};
+                    dist.forEach(d => distribution[d.rating] = d.count);
+
+                    // Recent feedback
+                    db.query(
+                        "SELECT * FROM ratings WHERE poll_id = ? ORDER BY created_at DESC LIMIT 5",
+                        [pollId],
+                        (err3, feedback) => {
+
+                            res.json({
+                                avg: stats[0].avg || 0,
+                                total: stats[0].total,
+                                distribution,
+                                feedback
+                            });
+                        }
+                    );
                 }
             );
         }
     );
 });
 
-app.post("/update-complaint-status/:id", (req, res) => {
-    if (!req.session.user || req.session.user.role !== "manager") return res.redirect("/login");
+app.post("/delete-poll/:id", (req, res) => {
+    db.query("DELETE FROM polls WHERE id = ?", [req.params.id], () => {
+        res.redirect("/feedback");
+    });
+});
 
-    const complaintId = req.params.id;
-    const { status, response } = req.body;
-
+app.post("/deactivate-poll/:id", (req, res) => {
     db.query(
-        "UPDATE complaints SET status = ?, response = ? WHERE id = ?",
-        [status, response, complaintId],
-        (err) => {
-            if (err) throw err;
-            res.redirect("/manager");
-        }
+        "UPDATE polls SET is_active = 0 WHERE id = ?",
+        [req.params.id],
+        () => res.redirect("/feedback")
     );
 });
+
 
 // ================== LOGOUT ==================
 app.post("/logout", (req, res) => {
