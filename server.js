@@ -214,13 +214,22 @@ app.get("/manager/complain", (req, res) => {
 app.get("/feedback", (req, res) => {
     if (!req.session.user) return res.redirect("/login");
 
-    db.query("SELECT * FROM polls", (err, polls) => {
+    db.query(`
+        SELECT 
+            p.*,
+            IFNULL(AVG(r.rating), 0) AS avg,
+            COUNT(r.id) AS total
+        FROM polls p
+        LEFT JOIN ratings r ON p.id = r.poll_id
+        GROUP BY p.id
+    `, (err, polls) => {
+
         if (err) throw err;
 
         res.render("manager/feedback", {
             polls,
             showForm: false,
-            user: req.session.user   // IMPORTANT
+            user: req.session.user
         });
     });
 });
@@ -236,15 +245,24 @@ app.get("/create-poll", (req, res) => {
 });
 // Create poll
 app.post("/create-poll", (req, res) => {
-    if (!req.session.user) return res.redirect("/login");
+    if (!req.session.user || req.session.user.role !== "manager") {
+        return res.redirect("/login");
+    }
 
     const { title, description, category } = req.body;
 
+    if (!title || !description) {
+        return res.send("Title and Description are required");
+    }
+
     db.query(
-        "INSERT INTO polls (title, description, category, status) VALUES (?, ?, ?, ?)",
-        [title, description, category ],
+        "INSERT INTO polls (title, description, category) VALUES (?, ?, ?)",
+        [title, description, category],
         (err) => {
-            if (err) throw err;
+            if (err) {
+                console.log(err);
+                return res.send("Database error");
+            }
             res.redirect("/feedback");
         }
     );
@@ -503,7 +521,7 @@ app.get("/student/feedback", (req, res) => {
             console.log(err);
             return res.send("DB Error");
         }
-
+        
         res.render("student/feedback", {
             polls,
             user: req.session.user
@@ -512,36 +530,47 @@ app.get("/student/feedback", (req, res) => {
 });
 
 app.post("/submit-rating/:id", (req, res) => {
-    const { rating, comment } = req.body;
-    const student = req.session.user.roll;
-    const pollId = req.params.id;
+    if (!req.session.user) return res.redirect("/login");
 
-    // 🔍 Check if already exists
+    const pollId = req.params.id;
+    const student = req.session.user.roll;
+    const { rating, comment } = req.body;
+
+    if (!rating) return res.send("Please select rating");
+
+    // ✅ CHECK if already exists
     db.query(
         "SELECT * FROM ratings WHERE poll_id = ? AND student = ?",
         [pollId, student],
         (err, result) => {
-            if (err) return res.send("Error");
+            if (err) {
+                console.log(err);
+                return res.send("DB Error");
+            }
 
             if (result.length > 0) {
-                // 🔁 UPDATE existing rating
+                // 🔁 UPDATE
                 db.query(
                     "UPDATE ratings SET rating = ?, comment = ? WHERE poll_id = ? AND student = ?",
                     [rating, comment, pollId, student],
                     (err2) => {
-                        if (err2) return res.send("Error");
-
+                        if (err2) {
+                            console.log(err2);
+                            return res.send("Update Error");
+                        }
                         res.redirect("/student/feedback");
                     }
                 );
             } else {
-                //  INSERT new rating
+                // ➕ INSERT
                 db.query(
                     "INSERT INTO ratings (poll_id, student, rating, comment) VALUES (?, ?, ?, ?)",
                     [pollId, student, rating, comment],
                     (err3) => {
-                        if (err3) return res.send("Error");
-
+                        if (err3) {
+                            console.log(err3);
+                            return res.send("Insert Error");
+                        }
                         res.redirect("/student/feedback");
                     }
                 );
@@ -553,34 +582,54 @@ app.post("/submit-rating/:id", (req, res) => {
 app.get("/poll-results/:id", (req, res) => {
     const pollId = req.params.id;
 
-    //  Average + total
     db.query(
         "SELECT AVG(rating) as avg, COUNT(*) as total FROM ratings WHERE poll_id = ?",
         [pollId],
         (err, stats) => {
 
-            //  Distribution
+            if (err) {
+                console.error("Stats Error:", err);
+                return res.status(500).json({ error: "DB error in stats" });
+            }
+
+            let avg = stats?.[0]?.avg || 0;
+            let total = stats?.[0]?.total || 0;
+
             db.query(
                 "SELECT rating, COUNT(*) as count FROM ratings WHERE poll_id = ? GROUP BY rating",
                 [pollId],
                 (err2, dist) => {
 
-                    // convert to full 1–5 structure
-                    let distribution = {1:0,2:0,3:0,4:0,5:0};
-                    dist.forEach(d => distribution[d.rating] = d.count);
+                    if (err2) {
+                        console.error("Distribution Error:", err2);
+                        return res.status(500).json({ error: "DB error in distribution" });
+                    }
 
-                    // Recent feedback
+                    let distribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+                    dist.forEach(d => {
+                        distribution[d.rating] = d.count;
+                    });
+
                     db.query(
-                        "SELECT * FROM ratings WHERE poll_id = ? ORDER BY created_at DESC LIMIT 5",
+                        "SELECT student, rating, comment FROM ratings WHERE poll_id = ? ORDER BY created_at DESC",
                         [pollId],
                         (err3, feedback) => {
 
-                            res.json({
-                                avg: stats[0].avg || 0,
-                                total: stats[0].total,
+                            if (err3) {
+                                console.error("Feedback Error:", err3);
+                                return res.status(500).json({ error: "DB error in feedback" });
+                            }
+
+                            const result = {
+                                avg,
+                                total,
                                 distribution,
                                 feedback
-                            });
+                            };
+
+                            console.log("API DATA:", result);
+
+                            res.json(result);
                         }
                     );
                 }

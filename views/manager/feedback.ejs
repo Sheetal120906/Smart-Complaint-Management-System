@@ -79,25 +79,26 @@
 
 /* Poll Cards */
 .poll-container {
-    display: flex;
-    flex-wrap: wrap;        /* allows next row */
-    gap: 20px;              /* space between cards */
-    justify-content: flex-start;
-    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 350px));
+    justify-content: start;
+    gap: 20px;
+    margin-top: 20px;
+    align-items: start;
 }
 
 .poll-card {
     background: #1e293b;
     padding: 20px;
     border-radius: 12px;
-    width: 300px;           /* fixed width for grid look */
+    width: 300px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.4);
 }
 
-@media (max-width: 768px) {
-    .poll-card {
-        width: 100%;   /* mobile full width */
-    }
+
+.poll-card:hover {
+    transform: translateY(-5px);
+    transition: 0.3s;
 }
 
 .stats {
@@ -271,8 +272,8 @@ select {
                     <p><%= p.description %></p>
 
                     <div class="stats">
-                        <span>0.00 Avg</span>
-                        <span>0 Ratings</span>
+                        <span><%= Number(p.avg).toFixed(2) %> Avg</span>
+                        <span><%= p.total %> Ratings</span>
                     </div>
 
                     <div class="status">Active</div>
@@ -293,7 +294,7 @@ select {
     <form action="/delete-poll/<%= p.id %>" method="POST" style="display:inline;">
         <button class="btn-danger">Delete</button>
     </form>
-
+</div>
 
                 </div>
             <% }) %>
@@ -342,22 +343,25 @@ function viewResults(id, title){
         document.getElementById("resultModal").style.display = "flex";
         document.getElementById("modal-title").innerText = title;
 
-        // avg + total
-        document.getElementById("avg").innerText = data.avg.toFixed(2);
-        document.getElementById("total").innerText = data.total;
+        //  avg 
+        let avg = Number(data.avg) || 0;
+        let total = Number(data.total) || 0;
 
-        // stars
-        let stars = "";
+        document.getElementById("avg").innerText = avg.toFixed(2);
+        document.getElementById("total").innerText = total;
+
+        //  stars
+        let starsHTML = "";
         for(let i=1;i<=5;i++){
-            stars += i <= Math.round(data.avg) ? "⭐" : "☆";
+            starsHTML += i <= Math.round(avg) ? "⭐" : "☆";
         }
-        document.getElementById("avg-stars").innerHTML = stars;
+        document.getElementById("avg-stars").innerHTML = starsHTML;
 
-        // distribution bars
+        //  distribution (safe handling)
         let distHTML = "";
         for(let i=5;i>=1;i--){
-            let count = data.distribution[i];
-            let percent = data.total ? (count / data.total * 100) : 0;
+            let count = (data.distribution && data.distribution[i]) ? data.distribution[i] : 0;
+            let percent = total ? (count / total * 100) : 0;
 
             distHTML += `
                 <div class="bar-row">
@@ -371,18 +375,28 @@ function viewResults(id, title){
         }
         document.getElementById("distribution").innerHTML = distHTML;
 
-        // feedback
+        // feedback (empty safe)
         let fbHTML = "";
-        data.feedback.forEach(f => {
-            let stars = "⭐".repeat(f.rating);
-            fbHTML += `
-                <div class="fb-card">
-                    <div>${stars}</div>
-                    <p>${f.comment || "No comment"}</p>
-                </div>
-            `;
-        });
+
+        if (!data.feedback || data.feedback.length === 0) {
+            fbHTML = "<p>No feedback yet</p>";
+        } else {
+            data.feedback.forEach(f => {
+                let stars = "⭐".repeat(f.rating);
+
+                fbHTML += `
+                    <div class="fb-card">
+                        <div>${stars}</div>
+                        <p>${f.comment || "No comment"}</p>
+                    </div>
+                `;
+            });
+        }
+
         document.getElementById("feedback-list").innerHTML = fbHTML;
+    })
+    .catch(err => {
+        console.log("Error:", err);
     });
 }
 
