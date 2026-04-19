@@ -150,7 +150,10 @@
 <body>
     <% complaints.forEach(function(c){ %>
 
-<div class="complaint-card">
+<div class="complaint-card"
+     data-category="<%= c.category %>"
+     data-status="<%= c.status %>">
+     
 <div class="card-body">
 
 <!-- HEADER -->
@@ -159,14 +162,14 @@
         <span class="tag tag-dept"><%= c.category %></span>
 
         <!-- STATUS COLOR -->
-        <span class="tag 
+    <span class="tag 
     <%= c.status === 'pending' ? 'tag-pending' : '' %>
-    <%= c.status === 'in-progress' ? 'tag-progress' : '' %>
+    <%= c.status === 'inProgress' ? 'tag-progress' : '' %>
     <%= c.status === 'resolved' ? 'tag-resolved' : '' %>
 ">
-    <%= c.status === "in-progress" ? "In Progress" : 
+    <%= c.status === "inProgress" ? "In Progress" : 
          c.status.charAt(0).toUpperCase() + c.status.slice(1) %>
-</span>
+   </span>
     </div>
 
     <div style="display:flex; gap:10px; align-items:center;">

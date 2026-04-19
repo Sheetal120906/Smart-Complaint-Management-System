@@ -293,21 +293,21 @@ body {
             <div class="filters">
                 <div class="filter-group">
                     <label>Category:</label>
-                    <select>
-                        <option>All</option>
-                        <% const categories=[...new Set(complaints.map(c=> c.category))];
-                        categories.forEach(cat => { %>
-                        <option><%= cat %></option>
-                        <% }) %>
-                    </select>
+                    <select id="categoryFilter">
+                      <option value="All">All</option>
+                         <% const categories=[...new Set(complaints.map(c=> c.category))];
+                          categories.forEach(cat => { %>
+                      <option value="<%= cat %>"><%= cat %></option>
+                   <% }) %>
+                   </select>
                 </div>
                 <div class="filter-group">
                     <label>Status:</label>
-                    <select>
-                        <option>All</option>
-                        <option>Pending</option>
-                        <option>In Progress</option>
-                        <option>Resolved</option>
+                   <select id="statusFilter">
+                      <option value="All">All</option>
+                      <option value="pending">Pending</option>
+                      <option value="inProgress">In Progress</option>
+                      <option value="resolved">Resolved</option>
                     </select>
                 </div>
             </div>
@@ -317,7 +317,37 @@ body {
     user: user, 
     currentPage: currentPage 
 }) %>
-           
+        
+<script>
+const categoryFilter = document.getElementById("categoryFilter");
+const statusFilter = document.getElementById("statusFilter");
+
+function filterComplaints() {
+    const selectedCategory = categoryFilter.value;
+    const selectedStatus = statusFilter.value;
+
+    const cards = document.querySelectorAll(".complaint-card");
+
+    cards.forEach(card => {
+        const category = card.getAttribute("data-category");
+        const status = card.getAttribute("data-status");
+
+        const matchCategory = (selectedCategory === "All" || selectedCategory === category);
+        const matchStatus = (selectedStatus === "All" || selectedStatus === status);
+
+        if (matchCategory && matchStatus) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+}
+
+categoryFilter.addEventListener("change", filterComplaints);
+statusFilter.addEventListener("change", filterComplaints);
+</script>
+
 </body>
+
 
 </html>
