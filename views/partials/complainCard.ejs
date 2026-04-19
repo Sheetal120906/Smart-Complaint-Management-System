@@ -20,10 +20,13 @@
 .tag {
     padding: 4px 10px;
     border-radius: 20px;
-    font-size: 11px;
+    font-size: 14px;
 }
 
-.tag-dept { background: #475569; }
+.tag-dept { 
+    background: #475569; 
+    margin-bottom: 5px;
+}
 
 
 .tag-pending {
@@ -193,7 +196,7 @@
 <h3 style="margin-top:10px; color:#38bdf8;"><%= c.title %></h3>
 
 <!-- DESCRIPTION -->
-<p style="color:#e2e8f0;"><%= c.description %></p>
+<p style="color:#e2e8f0; padding-bottom:10px; padding-top:10px"><%= c.description %></p>
 
 <!-- RESPONSE (FOR BOTH) -->
 <% if (c.response) { %>

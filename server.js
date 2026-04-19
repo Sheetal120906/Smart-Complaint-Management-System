@@ -48,7 +48,7 @@ app.get("/dashboard", (req, res) => {
     db.query("SELECT * FROM complaints", (err, complaints) => {
         if (err) throw err;
 
-        // ✅ CALCULATE STATS
+        //  CALCULATE STATS
         const stats = {
             total: complaints.length,
             pending: complaints.filter(c => c.status === "pending").length,
@@ -56,7 +56,7 @@ app.get("/dashboard", (req, res) => {
             resolved: complaints.filter(c => c.status === "resolved").length
         };
 
-        // ✅ FETCH COMMENTS FOR EACH COMPLAINT
+        //  FETCH COMMENTS FOR EACH COMPLAINT
         const promises = complaints.map(c => {
             return new Promise((resolve, reject) => {
                 db.query(
@@ -538,7 +538,7 @@ app.post("/submit-rating/:id", (req, res) => {
 
     if (!rating) return res.send("Please select rating");
 
-    // ✅ CHECK if already exists
+    //  CHECK if already exists
     db.query(
         "SELECT * FROM ratings WHERE poll_id = ? AND student = ?",
         [pollId, student],
@@ -549,7 +549,7 @@ app.post("/submit-rating/:id", (req, res) => {
             }
 
             if (result.length > 0) {
-                // 🔁 UPDATE
+                // UPDATE
                 db.query(
                     "UPDATE ratings SET rating = ?, comment = ? WHERE poll_id = ? AND student = ?",
                     [rating, comment, pollId, student],
@@ -662,6 +662,7 @@ app.post("/logout", (req, res) => {
 });
 
 // ================== SERVER ==================
-app.listen(3000, () => {
-    console.log("Server running on http://localhost:3000");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });

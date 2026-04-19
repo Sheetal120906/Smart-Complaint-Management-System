@@ -38,15 +38,15 @@
         }
 
         .manage-header h1 {
-            font-size: 28px;
+            font-size: 40px;
             font-weight: 700;
             color: white;
         }
 
         .manage-header p {
             color: #9ca3af;
-            font-size: 14px;
-            margin-top: 5px;
+            font-size: 15px;
+            margin-top: 8px;
         }
 
         /* --- Stats Grid --- */
@@ -61,6 +61,7 @@
             background: #172133;
             padding: 30px;
             border-radius: 12px;
+            border: 1px solid rgb(136, 181, 253);
             border-bottom: 4px solid #3b82f6;
         }
 
@@ -272,19 +273,19 @@ body {
         <div class="stats-grid">
             <div class="stat-card a">
                 <div class="stat-number"><%= complaints.length %></div>
-                <div class="stat-label">Total</div>
+                <div class="stat-label" style="font-size: 20px;">Total</div>
             </div>
             <div class="stat-card b">
                 <div class="stat-number"><%= complaints.filter(c => c.status === 'pending').length %></div>
-                <div class="stat-label">Pending</div>
+                <div class="stat-label" style="font-size: 20px;">Pending</div>
             </div>
             <div class="stat-card c">
                 <div class="stat-number"><%= complaints.filter(c => c.status === 'inProgress').length %></div>
-                <div class="stat-label">In Progress</div>
+                <div class="stat-label" style="font-size: 20px;">In Progress</div>
             </div>
             <div class="stat-card d">
                 <div class="stat-number"><%= complaints.filter(c => c.status === 'resolved').length %></div>
-                <div class="stat-label">Resolved</div>
+                <div class="stat-label" style="font-size: 20px;">Resolved</div>
             </div>
         </div>
 

@@ -19,6 +19,10 @@
             text-align: center;
             padding: 40px;
         }
+        .welcome-section p{
+            padding-top: 10px;
+            font-size: 19px;
+        }
 
         .container { max-width: 1200px; margin: auto; }
 
@@ -32,7 +36,16 @@
             background: #172133;
             padding: 30px;
             border-radius: 12px;
-            border-bottom: 4px solid #3b82f6;
+             border: 0.5px solid rgb(119, 187, 251);
+            border-bottom: 5px solid #3b82f6;
+         
+        }
+        .stat-card p{
+            padding-top: 10px;
+            font-size: 25px;
+        }
+        .stat-card h3{
+            font-size: 30px;
         }
 
         .pending { border-bottom-color: #f59e0b; }
@@ -44,17 +57,30 @@
             padding: 30px;
             margin-top: 30px;
             border-radius: 12px;
+            font-size: 23px;
         }
 
         .action-btn {
             background: #0f172a;
-            padding: 20px;
+            padding: 30px;
             border-radius: 10px;
             margin: 10px;
+            margin-left: 40px;
             display: inline-block;
             cursor: pointer;
+            font-size: 23px;
+            border: 1px solid rgb(119, 187, 251);
         }
+       
+        .action-btn:hover{
+          transform: scale(1.05);
+          transition: 0.3s;
+           }
 
+         .ac{
+            padding-top: 15px;
+            margin-left: 60px;
+         }
         .empty-state {
             text-align: center;
             padding: 50px;
@@ -123,7 +149,7 @@
     <div class="section-box">
         <h2>Quick Actions</h2>
 
-        <div>
+        <div class="ac">
             <div class="action-btn" onclick="location.href='/add-complaints'">Post Complaint</div>
             <div class="action-btn" onclick="location.href='/complaints'">All Complaints</div>
             <div class="action-btn" onclick="location.href='/my-complaints'">My Complaints</div>
