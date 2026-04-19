@@ -4,21 +4,33 @@ const mysql = require("mysql2");
 const db = require("./db");
 const session = require("express-session");
 
+// 🔥 ADD THIS
+const MySQLStore = require("express-mysql-session")(session);
 
 const app = express();
 
+// ================== SESSION STORE ==================
+const sessionStore = new MySQLStore({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
+    port: process.env.DB_PORT
+});
+
 // ================== SESSION SETUP ==================
 app.use(session({
-    secret: "yourSecretKey",  // Replace with a strong secret
+    key: "session_cookie_name",
+    secret: process.env.SESSION_SECRET || "yourSecretKey",
+    store: sessionStore,            
     resave: false,
-    saveUninitialized: true
+    saveUninitialized: false         
 }));
 
 // ================== MIDDLEWARE ==================
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
-
 // ================== EJS SETUP ==================
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
