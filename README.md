@@ -7,18 +7,18 @@ This system improves communication between users and administrators and ensures 
 
 🚀 Features
 👤 User Module
-User registration and login system
-Submit complaints with category and description
-Submit feedback and suggestions
-View status of complaints (Pending / In Progress / Resolved)
-Track submitted complaints and feedback history
+User registration and login system,
+Submit complaints with category and description,
+Submit feedback and suggestions,
+View status of complaints (Pending / In Progress / Resolved),
+Track submitted complaints and feedback history,
 
 🛠️ Admin Module
-Secure admin login
-View all complaints and feedback
-Filter complaints by category and status
-Update complaint status
-send and Review user feedback
+Secure admin login,
+View all complaints and feedback,
+Filter complaints by category and status,
+Update complaint status,
+send and Review user feedback,
 
 🧰 Tech Stack
 Frontend: HTML, CSS, JavaScript, EJS
