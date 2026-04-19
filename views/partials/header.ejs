@@ -1,27 +1,11 @@
-<link rel="icon" href="images/icon.png">
-<nav class="navbar">
-    <div class="nav-container">
-        <div class="nav-brand">CampusCare</div>
-
-        <div class="nav-content">
-            <ul class="nav-links">
-                <li><a href="/dashboard">Dashboard</a></li>
-                <li><a href="/complaints">All Complaints</a></li>
-                <li><a href="/my-complaints">My Complaints</a></li>
-                <li><a href="/student/feedback">Feedback</a></li>
-            </ul>
-
-            <div class="nav-user">
-                <span ><%= user.name %></span>
-                <form action="/logout" method="POST" style="display: inline;">
-                    <button type="submit" class="logout-btn">Logout</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mheader</title>
+    <link rel="icon" href="images/icon.png">
+    <style>
     /* Gradient Background matching the screenshots */
     .navbar {
        background-color: #172133;
@@ -106,4 +90,32 @@
         background-color: #374151;
     }
 </style>
+
+
+</head>
+<body>
+    <nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">CampusCare</div>
+
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/complaints">All Complaints</a></li>
+                <li><a href="/my-complaints">My Complaints</a></li>
+                <li><a href="/student/feedback">Feedback</a></li>
+            </ul>
+
+            <div class="nav-user">
+                <span ><%= user.name %></span>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
+
 

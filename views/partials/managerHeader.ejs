@@ -1,26 +1,11 @@
-<link rel="icon" href="images/icon.png">
-<nav class="navbar">
-    <div class="nav-container">
-        <div class="nav-brand">CampusCare</div>
-
-        <div class="nav-content">
-            <ul class="nav-links">
-                <li><a href="/manager">Dashboard</a></li>
-                <li><a href="/manager/complain">Complaints</a></li>
-                <li><a href="/feedback">Feedback Polls</a></li>
-            </ul>
-
-            <div class="nav-user">
-                <span><%= user.name %></span>
-                <form action="/logout" method="POST" style="display: inline;">
-                    <button type="submit" class="logout-btn">Logout</button>
-                </form>
-            </div>
-        </div>
-    </div>
-</nav>
-
-<style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>header</title>
+    <link rel="icon" href="images/icon.png">
+    <style>
     .navbar {
        background-color: #172133;
        border-bottom: 1px solid #2d3748;
@@ -94,3 +79,30 @@
         background-color: #374151;
     }
 </style>
+</head>
+<body>
+    <nav class="navbar">
+    <div class="nav-container">
+        <div class="nav-brand">CampusCare</div>
+
+        <div class="nav-content">
+            <ul class="nav-links">
+                <li><a href="/manager">Dashboard</a></li>
+                <li><a href="/manager/complain">Complaints</a></li>
+                <li><a href="/feedback">Feedback Polls</a></li>
+            </ul>
+
+            <div class="nav-user">
+                <span><%= user.name %></span>
+                <form action="/logout" method="POST" style="display: inline;">
+                    <button type="submit" class="logout-btn">Logout</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+</body>
+</html>
+
+
+
